@@ -220,6 +220,10 @@ Ctrl-Alt-j          Enter Vi editing mode
             $ setxkbmap -option "compose:ralt" us
             $ é ô
             $ # Jérôme ♥ Amy
+
+        # to view current compose key:
+        grep "compose:" /usr/share/X11/xkb/rules/base.lst
+
         """,
     "input": """
         # debug input events
@@ -279,6 +283,9 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     """,
     "keyboard": """
+
+        # see which key codes correspond to physical keys:
+        sudo evtest
 
         ### map
 
