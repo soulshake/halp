@@ -422,6 +422,9 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     """,
     "docker": """
+        # Copy some directory from a container
+        docker run --rm myrepo/private-gems tar -C /gems -cf- . | tar -C /tmp/gems -xf-
+
         sudo systemctl start docker
         docker-check-config.sh
         docker info
