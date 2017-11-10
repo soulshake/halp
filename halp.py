@@ -98,6 +98,10 @@ def keyboard():
     print(notes["keyboard"])
 
 @cli.command()
+def markdown():
+    print(notes["markdown"])
+
+@cli.command()
 def mysql():
     print(notes["mysql"])
 

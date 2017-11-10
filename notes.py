@@ -443,6 +443,13 @@ Ctrl-Alt-j          Enter Vi editing mode
         View docker logs via systemd:
             sudo journalctl -fu docker.service
     """,
+    "markdown": """
+        # Collapsible section
+        <details>
+          <summary>Click to expand</summary>
+          whatever
+        </details>
+    """,
     "games": """
         gnome-mahjongg
     """,
