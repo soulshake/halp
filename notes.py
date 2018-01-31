@@ -119,7 +119,14 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     "i3":
     {
+    "screenshots": """
+        François-Xavier Bourlet (bombela@gmail.com)
+        bindsym Shift+Print exec exec mate-screenshot -a
+        bindsym Ctrl+Shift+Print exec exec mate-screenshot -w
+    """,
     "navigation": """
+    ### close floating window
+      mod+shift+q
 
     ### reload i3 config
       mod+shift+r
@@ -279,6 +286,9 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     """,
     "keyboard": """
+        ### layouts (including accents)
+        mate-keyboard-properties
+        -> US international (dead keys)
 
         ### map
 
@@ -581,6 +591,10 @@ Ctrl-Alt-j          Enter Vi editing mode
 
         zt/zz/zb
         redraw with cursor at top/middle/bottom of page
+
+"Rewrap document to tw:
+gw
+:set tw=80
 
 "Max out the height of the current split
 ctrl + w _

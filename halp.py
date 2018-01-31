@@ -87,7 +87,11 @@ def gandi():
 
 @cli.command()
 def i3():
-    print(notes["i3"]["navigation"])
+    for key in notes["i3"]:
+        print("===== {} =====".format(key))
+        print(notes["i3"][key])
+    #print(notes["i3"]["navigation"])
+    #print(notes["i3"]["navigation"])
 
 @cli.command()
 def jq():
