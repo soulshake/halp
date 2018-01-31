@@ -227,6 +227,10 @@ Ctrl-Alt-j          Enter Vi editing mode
             $ setxkbmap -option "compose:ralt" us
             $ é ô
             $ # Jérôme ♥ Amy
+
+        # to view current compose key:
+        grep "compose:" /usr/share/X11/xkb/rules/base.lst
+
         """,
     "input": """
         # debug input events
@@ -289,6 +293,9 @@ Ctrl-Alt-j          Enter Vi editing mode
         ### layouts (including accents)
         mate-keyboard-properties
         -> US international (dead keys)
+
+        # see which key codes correspond to physical keys:
+        sudo evtest
 
         ### map
 
@@ -425,6 +432,9 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     """,
     "docker": """
+        # Copy some directory from a container
+        docker run --rm myrepo/private-gems tar -C /gems -cf- . | tar -C /tmp/gems -xf-
+
         sudo systemctl start docker
         docker-check-config.sh
         docker info
@@ -442,6 +452,13 @@ Ctrl-Alt-j          Enter Vi editing mode
 
         View docker logs via systemd:
             sudo journalctl -fu docker.service
+    """,
+    "markdown": """
+        # Collapsible section
+        <details>
+          <summary>Click to expand</summary>
+          whatever
+        </details>
     """,
     "games": """
         gnome-mahjongg
