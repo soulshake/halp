@@ -241,6 +241,9 @@ Ctrl-Alt-j          Enter Vi editing mode
     ,
 
     "trackpad": """
+        # palm detection stuff
+          $ syndaemon  --> NO! actually just use mate-control-center -> mouse
+
         # view touchpad Parameter settings:
           $ synclient
 
@@ -287,6 +290,9 @@ Ctrl-Alt-j          Enter Vi editing mode
             CornerCoasting          = 0
             CoastingSpeed           = 20
             CoastingFriction        = 50
+
+        Tip: To help find the best values for palm detection, you can use evtest to see the width and Z values reported during touchpad use.
+
 
     """,
     "keyboard": """
@@ -769,6 +775,10 @@ imap <Tab> <C-P>
 
         ip addr add 10.10.10.10/24 dev eth0
         # eth0 = the name of the interface to which you want to add the address
+    """,
+    "iptables": """
+    # watch iptables counters in real time:
+        watch --interval 0 'iptables -nvL'
     """,
     "git": """
         Create new local branch that tracks an upstream branch:

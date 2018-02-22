@@ -94,6 +94,10 @@ def i3():
     #print(notes["i3"]["navigation"])
 
 @cli.command()
+def iptables():
+    print(notes["iptables"])
+
+@cli.command()
 def jq():
     print(notes["jq"])
 
