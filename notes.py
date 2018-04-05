@@ -300,7 +300,7 @@ Ctrl-Alt-j          Enter Vi editing mode
     """,
     "keyboard": """
         ### layouts (including accents)
-        mate-keyboard-properties
+        mate-keyboard-properties  (in mate-control-center package)
         -> US international (dead keys)
 
         # see which key codes correspond to physical keys:
