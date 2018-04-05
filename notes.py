@@ -231,6 +231,9 @@ Ctrl-Alt-j          Enter Vi editing mode
         # to view current compose key:
         grep "compose:" /usr/share/X11/xkb/rules/base.lst
 
+
+        see also: 'halp keyboard'
+
         """,
     "input": """
         # debug input events
