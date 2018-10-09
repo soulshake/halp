@@ -239,7 +239,6 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     """
     ,
-
     "trackpad": """
         # palm detection stuff
           $ syndaemon  --> NO! actually just use mate-control-center -> mouse
@@ -295,6 +294,11 @@ Ctrl-Alt-j          Enter Vi editing mode
 
 
     """,
+    "images": """
+        image viewer:
+        $ feh -ZF
+    """
+    ,
     "keyboard": """
         ### layouts (including accents)
         mate-keyboard-properties
@@ -819,6 +823,12 @@ imap <Tab> <C-P>
 
 
 
+    """,
+    "vpn": """
+    you could fire up an EC2 instance and SSH to it enabling socks forwarding
+    en gros:
+    ssh -D 1111 ubuntu@remote-ec2-instance
+    ensuite dans ton navigateur tu lui dit de se connecter via un proxy socks sur localhost:1111
     """,
 
     "etc": """

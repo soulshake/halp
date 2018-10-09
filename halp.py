@@ -94,6 +94,10 @@ def i3():
     #print(notes["i3"]["navigation"])
 
 @cli.command()
+def images():
+    print(notes["images"])
+
+@cli.command()
 def iptables():
     print(notes["iptables"])
 
@@ -172,6 +176,10 @@ def usb():
 @cli.command()
 def vim():
     print(notes["vim"])
+
+@cli.command()
+def vpn():
+    print(notes["vpn"])
 
 @cli.command()
 def wifi():
