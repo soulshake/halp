@@ -32,6 +32,10 @@ def aws():
     print(notes["aws"])
 
 @cli.command()
+def backup():
+    print(notes["backup"])
+
+@cli.command()
 def bash():
     print(notes["bash"])
 

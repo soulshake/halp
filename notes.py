@@ -112,6 +112,30 @@ Ctrl-Alt-j          Enter Vi editing mode
         $  ip ro ls
         default via 192.168.1.1 dev wlan0  proto static  metric 1024
                      ^^^^^^^^^^ is the router
+
+
+    # to share ethernet connection
+
+    ## on machine with the connection:
+        sudo ip link set eth0 up
+        ip a  # to see if you have an IP address
+        sudo ip addr add 192.168.3.2/24 dev eth0
+        ping 192.168.3.1
+        sudo iptables -t nat -I POSTROUTING -s 192.168.3.1 -j MASQUERADE
+        sudo iptables -nxvL
+        sudo iptables -I FORWARD -s 192.168.3.1 -j ACCEPT
+        sudo iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+    ## on the other machine
+        ip route add default via 192.168.3.2
+        ip link set <interface> up
+        ip addr add 192.168.3.1/24 dev <interface>
+
+    and update /etc/resolv.conf
+
+    or, someday: launch a dhcp server on home device automatically
+
+
     """,
     "trash": """
         ~/.local/share/Trash
@@ -702,6 +726,9 @@ imap <Tab> <C-P>
         that's for computers without a graphical mode on login. can run startx. starts
         xsession after starting up display.  in that case you don't have a display manager.
 
+    """,
+    "backup": """
+    borg info /media/external/backup/patamushka::patamushka-2019-01-17\ 14:04:29.168226
     """,
     "bash": """
         # send stdout and stderr to /dev/null
