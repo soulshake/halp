@@ -466,6 +466,19 @@ Ctrl-Alt-j          Enter Vi editing mode
     Next time wifi interface mysteriously gone, try restarting network-manager, i.e.
     $ /etc/init.d/network-manager restart
 
+# slow network?
+
+    Next time internet is mysteriously slow at a hotel, try setting the BSSID manually via nmtui.
+
+    signal strength is negative, so bigger numbers are worse
+    filter by first digit of frequency (2 vs 5)
+    display the fastest 2 per frequency band
+
+    Run: addwifi.sh scan
+
+    Then set the BSSID manually by editing the connection via nmtui
+    ;q
+    ;q
 
     """,
     "docker": """
