@@ -1,6 +1,18 @@
 # -*- coding: UTF-8 -*-
 
 notes = {
+    "gpg": """
+    gpg --edit-key amy.bowen@gmail.com
+
+    --> expire
+    --> set new expiration date
+    --> save
+
+    gpg --send-keys 65955E609B076014
+
+    gpg --armor --export 65955E609B076014
+    replace on github
+    """,
     "android": """
         # mount
         jmtpfs /media/android
@@ -107,8 +119,7 @@ Alt-#               Comment the current line and start a new one.
 Ctrl-e              Enter Emacs editing mode
 Ctrl-Alt-j          Enter Vi editing mode
     """,
-    "network":
-    """
+    "network": """
         $  ip ro ls
         default via 192.168.1.1 dev wlan0  proto static  metric 1024
                      ^^^^^^^^^^ is the router
@@ -140,15 +151,13 @@ Ctrl-Alt-j          Enter Vi editing mode
     "trash": """
         ~/.local/share/Trash
     """,
-
-    "i3":
-    {
-    "screenshots": """
+    "i3": {
+        "screenshots": """
         François-Xavier Bourlet (bombela@gmail.com)
         bindsym Shift+Print exec exec mate-screenshot -a
         bindsym Ctrl+Shift+Print exec exec mate-screenshot -w
     """,
-    "navigation": """
+        "navigation": """
     ### close floating window
       mod+shift+q
 
@@ -184,7 +193,7 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     ### close current pane
       mod+shift+q
-      """
+      """,
     },
     "jq": """
         Retrieve only keys in a dict
@@ -244,7 +253,6 @@ Ctrl-Alt-j          Enter Vi editing mode
         /etc/bluetooth/, /proc/acpi/ibm/bluetooth, /etc/init.d/bluetooth,
         hciconfig, hcitool, hcidump, hciattach
         """,
-
     "accents": """
             `set` = show all envvars and functions
 
@@ -264,8 +272,7 @@ Ctrl-Alt-j          Enter Vi editing mode
 
         sudo libinput-debug-events
 
-    """
-    ,
+    """,
     "trackpad": """
         # palm detection stuff
           $ syndaemon  --> NO! actually just use mate-control-center -> mouse
@@ -324,8 +331,9 @@ Ctrl-Alt-j          Enter Vi editing mode
     "images": """
         image viewer:
         $ feh -ZF
-    """
-    ,
+         image editor:
+        $ digikam
+    """,
     "keyboard": """
         ### layouts (including accents)
         mate-keyboard-properties  (in mate-control-center package)
@@ -513,7 +521,6 @@ Ctrl-Alt-j          Enter Vi editing mode
     "games": """
         gnome-mahjongg
     """,
-
     "system": """
 
     System info
@@ -573,7 +580,6 @@ Ctrl-Alt-j          Enter Vi editing mode
         34866 = t-mobile network id
         http://nicholasarmstrong.com/2015/08/network-handover-google-fi/
     """,
-
     "displays": """
         ## Displays
         ### send desktop to another monitor
@@ -686,8 +692,7 @@ Autocompletion:
 imap <Tab> <C-P>
 
     """,
-    "session":
-    """
+    "session": """
     There are:
     - session managers
     - window managers (i3)
@@ -867,13 +872,25 @@ imap <Tab> <C-P>
 
 
     """,
+    "travis": """
+    # debug job (get job id from build log on web interface)
+    curl -s -X POST   -H "Content-Type: application/json"   -H "Accept: application/json"   -H "Travis-API-Version: 3"   -H "Authorization: token $TRAVIS_STAGING_ORG_API_TOKEN"   https://api-staging.travis-ci.org/job/${id}/debug
+
+    """,
     "vpn": """
     you could fire up an EC2 instance and SSH to it enabling socks forwarding
     en gros:
     ssh -D 1111 ubuntu@remote-ec2-instance
     ensuite dans ton navigateur tu lui dit de se connecter via un proxy socks sur localhost:1111
     """,
+    "printing": """
+    http://localhost:631/printers/
 
+    In Chrome, go to manage printers
+    Click printers
+    Click unlock
+    Add printer
+    """,
     "etc": """
 
         ## apple stuff
@@ -924,7 +941,7 @@ is your shell clean? -> one of the login shells is producing output
 bash_profile is for interactive shells; it can echo whatever you want
 bashrc should not display stuff
 
-"""
+""",
 }
 
 """
@@ -954,5 +971,3 @@ google sheets tricks
 
 =ImportJSON("https://api.github.com/repos/convox/rack/contributors?per_page=100", "/login", "noHeaders")
 """
-
-
