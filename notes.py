@@ -476,7 +476,29 @@ Ctrl-Alt-j          Enter Vi editing mode
 
 # slow network?
 
-    Next time internet is mysteriously slow at a hotel, try setting the BSSID manually via nmtui.
+    Next time internet is mysteriously slow at a hotel, try:
+    - ping the default gateway (`ip route`)
+
+$ ip route | grep default
+default via 172.20.0.1 dev wlan0 proto static metric 600 
+
+    if the responses are all < 1ms, then the traffic's not really going there.
+    check docker networks with `docker network ls` and locate the one starting with the same octets:
+    docker network ls -q | xargs docker network inspect | less
+
+And `docker network rm <name>`
+
+Then ping the default gateway again, this output is more normal:
+
+64 bytes from 172.20.0.1: icmp_seq=105 ttl=64 time=1.08 ms
+64 bytes from 172.20.0.1: icmp_seq=106 ttl=64 time=1.03 ms
+64 bytes from 172.20.0.1: icmp_seq=107 ttl=64 time=2.45 ms
+64 bytes from 172.20.0.1: icmp_seq=108 ttl=64 time=0.861 ms
+64 bytes from 172.20.0.1: icmp_seq=109 ttl=64 time=1.25 ms
+
+    if you have a stable ping from there then changing the BSSID won't help
+
+    - setting the BSSID manually via nmtui.
 
     signal strength is negative, so bigger numbers are worse
     filter by first digit of frequency (2 vs 5)
