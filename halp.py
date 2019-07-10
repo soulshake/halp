@@ -2,8 +2,50 @@
 import click
 from notes import notes
 
+# find the nearest comand based on the letter sequence
+# so you can type dkr for doker, etc..
+def normalize_nearest_command(x):
+    x = x.lower()
+
+    def find_letters(letters, command):
+        ptr = [[0, command]]
+        for l in letters:
+            ptr.append(find_letter(l, ptr[-1][1]))
+        return ptr
+
+    def find_letter(x, command):
+        if len(command) == 0:
+            return 0, ""
+        if command[0] == x:
+            return 1, command[1:]
+        return find_letter(x, command[1:])
+
+    def count_points(arr):
+        return sum([x[0] for x in arr])
+
+    stats = sorted(
+        [[key, count_points(find_letters(x, key))] for key in notes.keys()],
+        key=lambda x: x[1],
+    )[-1]
+    return stats[0]
+
+
+def execute(note, name):
+    click.secho("")
+    click.secho("   Hi i'm here to halp!, you have chosen:")
+    click.secho(
+        "   #############   " + name + "   #############   ", fg="blue", bold=True
+    )
+    if isinstance(note, dict):
+        for key in note:
+            click.secho("   ===== " + key + " =====", fg="red")
+            click.secho(note[key], fg="yellow")
+    else:
+        click.secho(note, fg="yellow")
+
+
 CONTEXT_SETTINGS = dict(
-    help_option_names=["-h", "--help"], token_normalize_func=lambda x: x.lower()
+    help_option_names=["-h", "--help"], token_normalize_func=normalize_nearest_command
 )
 
 
@@ -12,245 +54,19 @@ def cli():
     pass
 
 
+def make_command(name):
+    exec(
+        """
 @cli.command()
-def accents():
-    print(notes["accents"])
-
-
-@cli.command()
-def android():
-    print(notes["android"])
-
-
-@cli.command()
-def input():
-    print(notes["input"])
-
-
-@cli.command()
-def apache():
-    print(notes["apache"])
-
-
-@cli.command()
-def aws():
-    print(notes["aws"])
-
-
-@cli.command()
-def backup():
-    print(notes["backup"])
-
-
-@cli.command()
-def bash():
-    print(notes["bash"])
-
-
-@cli.command()
-def battery():
-    print(notes["battery"])
-
-
-@cli.command()
-def bluetooth():
-    print(notes["bluetooth"])
-    pass
-
-
-@cli.command()
-def defaults():
-    print(notes["defaults"])
-    pass
-
-
-@cli.command()
-def etc():
-    print(notes["etc"])
-
-
-@cli.command()
-def ethernet():
-    print(notes["ethernet"])
-
-
-@cli.command()
-def files():
-    print(notes["files"])
-
-
-@cli.command()
-def games():
-    print(notes["games"])
-
-
-@cli.command()
-def git():
-    print(notes["git"])
-
-
-@cli.command()
-def google_fi():
-    print(notes["google-fi"])
-
-
-@cli.command()
-def gpg():
-    print(notes["gpg"])
-
-
-@cli.command()
-def displays():
-    print(notes["displays"])
-
-
-@cli.command()
-def docker():
-    print(notes["docker"])
-
-
-@cli.command()
-def gandi():
-    print(notes["gandi"])
-
-
-@cli.command()
-def printing():
-    print(notes["printing"])
-
-
-@cli.command()
-def i3():
-    for key in notes["i3"]:
-        print("===== {} =====".format(key))
-        print(notes["i3"][key])
-    # print(notes["i3"]["navigation"])
-    # print(notes["i3"]["navigation"])
-
-
-@cli.command()
-def images():
-    print(notes["images"])
-
-
-@cli.command()
-def iptables():
-    print(notes["iptables"])
-
-
-@cli.command()
-def jq():
-    print(notes["jq"])
-
-
-@cli.command()
-def keyboard():
-    print(notes["keyboard"])
-
-
-@cli.command()
-def markdown():
-    print(notes["markdown"])
-
-
-@cli.command()
-def mysql():
-    print(notes["mysql"])
-
-
-@cli.command()
-def network():
-    print(notes["network"])
-
-
-@cli.command()
-def power():
-    print(notes["power"])
-
-
-@cli.command()
-def readline():
-    print(notes["readline"])
-
-
-@cli.command()
-def regex():
-    print(notes["regex"])
-
-
-@cli.command()
-def ruby():
-    print(notes["ruby"])
-
-
-@cli.command()
-def session():
-    print(notes["session"])
-
-
-@cli.command()
-def sound():
-    print(notes["sound"])
-
-
-@cli.command()
-def system():
-    print(notes["system"])
-
-
-@cli.command()
-def sudo():
-    print(notes["sudo"])
-
-
-@cli.command()
-def terminal():
-    print(notes["terminal"])
-
-
-@cli.command()
-def timezone():
-    print(notes["timezone"])
-
-
-@cli.command()
-def trackpad():
-    print(notes["trackpad"])
-
-
-@cli.command()
-def trash():
-    print(notes["trash"])
-
-
-@cli.command()
-def travis():
-    print(notes["travis"])
-
-
-@cli.command()
-def usb():
-    print(notes["usb"])
-
-
-@cli.command()
-def vim():
-    print(notes["vim"])
-
-
-@cli.command()
-def vpn():
-    print(notes["vpn"])
-
-
-@cli.command()
-def wifi():
-    print(notes["wifi"])
-
-
-@cli.command()
-def windows():
-    print(notes["windows"])
+def {rep_name}():
+    execute(notes["{name}"],"{name}")
+""".format(
+            rep_name=name.replace("-", "_"), name=name
+        )
+    )
+
+
+[make_command(x) for x in notes.keys()]
 
 
 if __name__ == "__main__":
