@@ -507,9 +507,17 @@ Then ping the default gateway again, this output is more normal:
     Run: addwifi.sh scan
 
     Then set the BSSID manually by editing the connection via nmtui
-    ;q
-    ;q
+    ====
 
+# Can't retrieve default nameservers in a captive portal situation:
+    random valid server IP: 193.19.211.1
+
+    how to retrieve valid nameservers:
+    "maybe running a dhcp client manually i.e. dhclient"
+
+    Run:
+    sudo dhclient wlan0
+    less /etc/resolvconf/run/resolv.conf
     """,
     "docker": """
         # Copy some directory from a container
@@ -913,6 +921,11 @@ imap <Tab> <C-P>
     Click unlock
     Add printer
     """,
+    "webserver": """
+    Run a local webserver serving the current directory:
+
+    $ python3 -m http.server
+        """,
     "etc": """
 
         ## apple stuff
