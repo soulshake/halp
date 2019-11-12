@@ -273,6 +273,23 @@ Ctrl-Alt-j          Enter Vi editing mode
         sudo libinput-debug-events
 
     """,
+    "bootloader": """
+    when PC can't boot to linux after updating BIOS
+
+    make a linux boot disk
+    boot into installer
+    rescue mode
+
+    find device/partition corresponding to linux install, e.g. /dev/nvme0asfflkd
+    reinstall grub boot loader on that device
+
+
+    (if it ends with p-something it's a partition, otherwise it's a new disk)
+
+    sda = whole device
+    sda1 - partitions
+
+    """,
     "trackpad": """
         # palm detection stuff
           $ syndaemon  --> NO! actually just use mate-control-center -> mouse
