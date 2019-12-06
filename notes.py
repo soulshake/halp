@@ -151,6 +151,10 @@ Ctrl-Alt-j          Enter Vi editing mode
     "trash": """
         ~/.local/share/Trash
     """,
+    "gmail": """
+    before:YYYY/MM/DD
+    after:YYYY/MM/DD
+    """,
     "i3": {
         "screenshots": """
         François-Xavier Bourlet (bombela@gmail.com)
