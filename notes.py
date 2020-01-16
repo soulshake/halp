@@ -277,6 +277,14 @@ Ctrl-Alt-j          Enter Vi editing mode
         sudo libinput-debug-events
 
     """,
+    "boot": """
+     To change default timeout for OS choice when booting: edit /etc/default/grub
+
+     Then run `sudo update-grub` to apply the changes.
+    """,
+    "startup": """
+    see "boot"
+    """,
     "bootloader": """
     when PC can't boot to linux after updating BIOS
 
