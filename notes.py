@@ -718,6 +718,9 @@ Then ping the default gateway again, this output is more normal:
     """,
     "vim": """
         ## vim
+        :noautocmd w  -> disable autoformat on save (see .vimrc)
+        or:
+            BLACK=no vim whatever.py  # (see .vimrc)
 
         25%  -> move to the 25% point of the file
 
@@ -749,6 +752,14 @@ Ctrl+W o
 Autocompletion:
 
 imap <Tab> <C-P>
+
+Commenting (nerdcommenter plugin):
+
+    \ c<space> = comment lines
+    \ cu = uncomment lines
+    \ ci = toggle comments on selected lines
+
+    See https://github.com/preservim/nerdcommenter for more
 
     """,
     "session": """
@@ -906,6 +917,10 @@ imap <Tab> <C-P>
 
         To discard changes to a specific file:
           $ git checkout README.md
+    """,
+    "notifications": """
+    dunst: ~/.config/dunst/dunstrc
+    can reload i3 if something's amiss
     """,
     "sound": """
         ## adjust volume
