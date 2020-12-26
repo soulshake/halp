@@ -32,6 +32,14 @@ notes = {
         with open('/tmp/index.html', 'a') as f:
             f.write(json.dumps(eval(data)))
     """,
+    "chrome": """
+    So, if you see your Chrome acting super slow (1 second delays between every redraw), this will help:
+
+    pkill -f chrome.*type=gpu-process
+
+
+    https://twitter.com/kolyshkin/status/1339406072860143618
+    """,
     "gandi": """
 
     http://doc.livedns.gandi.net/#managing-zones
@@ -964,6 +972,8 @@ Commenting (nerdcommenter plugin):
     Click printers
     Click unlock
     Add printer
+
+    Note: this requires gnome-control-center. If clicking 'unlock' doesn't seem to do anything, check syslog, and try running 'sudo gnome-control-center' instead.
     """,
     "webserver": """
     Run a local webserver serving the current directory:
