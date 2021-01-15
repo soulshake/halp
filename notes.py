@@ -310,6 +310,16 @@ Ctrl-Alt-j          Enter Vi editing mode
     sda1 - partitions
 
     """,
+    "settings": """
+
+        xdg-settings
+        gnome-tweaks (in gnome-tweak-tool package)
+        mate-settings-daemon
+
+    """,
+    "numlock": """
+    numlockx
+    """,
     "trackpad": """
         # palm detection stuff
           $ syndaemon  --> NO! actually just use mate-control-center -> mouse
@@ -827,6 +837,12 @@ Commenting (nerdcommenter plugin):
     borg info /media/external/backup/patamushka::patamushka-2019-01-17\ 14:04:29.168226
     """,
     "bash": """
+        # send all output from the rest of this file to FILE.WAT
+        exec >FILE.WAT
+        exec >>FILE.WAT  # append
+        exec 2>FILE.WAT  # send just stderr?
+        # (can be run in a subshell)
+
         # send stdout and stderr to /dev/null
         &>/dev/null
 
@@ -1030,6 +1046,30 @@ is your shell clean? -> one of the login shells is producing output
 bash_profile is for interactive shells; it can echo whatever you want
 bashrc should not display stuff
 
+""",
+"yubikey": """
+packages:
+yubikey-personalization
+yubikey-manager
+yubioath-desktop -- required to use CCID interface
+
+
+# view enabled modes
+ykman mode
+# enable CCID mode
+ykman mode OTP+FIDO+CCID
+
+(remove and re-insert yubikey)
+sudo yubioath-desktop
+
+Up to jessie, to use the card as a non-root users, you need to add a line to /etc/udev/rules.d/99-yubikeys.rules to the tell udev either
+https://wiki.debian.org/Smartcards/YubiKey4
+
+
+ykman oath add -t LABEL SECRET
+# -t = require touch
+
+ykman oath code
 """,
 }
 
