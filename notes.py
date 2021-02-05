@@ -40,6 +40,18 @@ notes = {
 
     https://twitter.com/kolyshkin/status/1339406072860143618
     """,
+    "cron": """
+
+    Edit cron tasks
+        $ crontab -e
+    List cron tasks
+        $ crontab -l
+    Back up cron tasks
+        $ crontab -l > ~/dotfiles/cron/crontab
+    'install' cron tasks from file
+        $ crontab ~/dotfiles/cron/crontab
+    """,
+
     "gandi": """
 
     http://doc.livedns.gandi.net/#managing-zones
