@@ -539,7 +539,7 @@ Ctrl-Alt-j          Enter Vi editing mode
     - ping the default gateway (`ip route`)
 
 $ ip route | grep default
-default via 172.20.0.1 dev wlan0 proto static metric 600 
+default via 172.20.0.1 dev wlan0 proto static metric 600
 
     if the responses are all < 1ms, then the traffic's not really going there.
     check docker networks with `docker network ls` and locate the one starting with the same octets:
@@ -577,6 +577,12 @@ Then ping the default gateway again, this output is more normal:
     Run:
     sudo dhclient wlan0
     less /etc/resolvconf/run/resolv.conf
+
+    # this one time, it worked automatically, so i grepped the logs to facilitate future searches. check it:
+    $ sudo grep 172.19.248.1 /var/log/syslog
+    Mar  8 16:46:42 zagreb NetworkManager[533]: <info>  [1615243602.1569] dhcp4 (wlp4s0): option domain_name_servers  => '172.19.248.1'
+    Mar  8 16:46:42 zagreb NetworkManager[533]: <info>  [1615243602.1575] dhcp4 (wlp4s0): option routers              => '172.19.248.1'
+
     """,
     "docker": """
         # Copy some directory from a container
@@ -698,6 +704,17 @@ Then ping the default gateway again, this output is more normal:
             ifconfig <interface> 10.10.10.10/24  # from jp machine, as root: once done, run `ping 10.10.10.11` from this machine
         then change the display environment variable:
             export DISPLAY="10.10.10.10:1"
+
+        # See also
+        nvidia-settings
+        xrandr
+        xrandr --fb 3840x2160  # force reconfigures the screen to the specified size.
+
+        autorandr --save U2414H-P51S --force
+        autorandr -c, --change  # Automatically load the first detected profile
+
+        # might need to run:
+        autorandr --default
     """,
     "timezone": """
         # timezone / date
