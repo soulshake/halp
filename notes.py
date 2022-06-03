@@ -1,6 +1,67 @@
 # -*- coding: UTF-8 -*-
 
 notes = {
+    "tcpdump": """
+    trace a remoteaddr IP to the origin pod:
+
+apply k8s/hacktheplanet.yml from container.training repo after setting spec.hostNetwork: true and uncommenting privileged
+install tcpdump / ngrep
+ngrep -tpd any -Wbyline /api/v1/ tcp and not port 41485
+make the request
+""",
+    "kubectl": """
+
+# unsafe port-forwarding for compatibility with docker compose
+
+use --address 0.0.0.0 flag to kubectl port-forward, e.g.
+
+```
+kubectl --address 0.0.0.0 port-forward service/SERVICE_NAME 8000:8000
+```
+Then use your machine's internal IP address (cf i3 status bar, 10.0.0.28) as the endpoint.
+But anyone connected to the same network (i.e. cafe wifi) will be able to access the DB!
+Non-Linux users have some envvar like `${DOCKER_HOST}` that includes this IP.
+
+    """,
+    "apt": """
+    See also:
+    - /usr/share/keyrings/
+    - /etc/apt/trusted.gpg.d/
+    """,
+    "audio": """
+
+    # helped when speakers/mic not working/detected:
+    pulseaudio --kill
+    pulseaudio --check
+
+back in the old days, you'd need to start your programs, telling them which sound card to use
+like I did with mplayer
+mplayer -ao alsa = use the first alsa device
+(or rather, the default alsa device, which may not be the first)
+mplayer -ao alsa:device=hw=0 → use the first alsa device
+aplay -l → list output alsa devices
+so back in the days we'd have some alsa.conf somewhere where we'd say "use that particular soundcard"
+(actually, back in the days, I only ever had one single sound card so that never was an issue for me, but whatevs)
+now we have pulseaudio, pipewire, etc
+apps send sound to pulseaudio, and pulseaudio can then route the sound to various outputs
+and we can change that routing "live", with pavucontrol and other tools
+and pulseaudio tries to remember what's the output that you were using last time, but it's notoriously bad at that, so then scheisse passiert
+
+I suggest that you write a little script that would leverage pacmd list or pactl list or something like that, to show:
+- which output device (PA calls them "sinks") is currently the default one
+- which output streams (PA calls them "sources" iirc) are currently playing, and on which sink
+And with a nice sub thing that would annotate BUILT IN ANALOG STEREO with "[INTERNAL SPEAKERS]" or whatever, so that it reminds you which is which
+so then you can just run pawtf.sh and it would show you what's what, in a way that you can immediately understand
+
+
+sound breakage reasons:
+- make sure built-in analog stereo is selected as fallback in pavucontrol (green checkmark)
+    """,
+    "filewatches": """
+
+    for foo in /proc/\*/fd/*; do readlink -f $foo; done | grep '^/proc/.*inotify' |cut -d/ -f3 |xargs -I '{}' -- ps --no-headers -o '%p %U %a' -p '{}' |uniq -c |sort -n
+
+    """,
     "gpg": """
     gpg --edit-key amy.bowen@gmail.com
 
@@ -20,6 +81,17 @@ notes = {
         # dismount
         fusermount -u /media/android/
 
+        if it looks like this:
+
+        d?????????? ? ?    ?       ?            ? /media/external/
+
+        ...then change USB mode in phone settings from "Use USB for..." from "no data transfer" to "File transfer"
+
+    rsync
+
+    """,
+    "storage": """
+    see `disk`
     """,
     "apache": """
         # Serve a simple json file
@@ -51,7 +123,6 @@ notes = {
     'install' cron tasks from file
         $ crontab ~/dotfiles/cron/crontab
     """,
-
     "gandi": """
 
     http://doc.livedns.gandi.net/#managing-zones
@@ -62,6 +133,12 @@ notes = {
 
     """,
     "readline": """
+
+Print all things
+
+bind -p
+
+Config file: ~/.inputrc
 
 Moving
 
@@ -222,6 +299,20 @@ Ctrl-Alt-j          Enter Vi editing mode
     "jq": """
         Retrieve only keys in a dict
          cat ~/.convox/auth  | jq 'to_entries[] | .key'
+
+        Split json into key-value pairs:
+        $ task='{"target": "google.com", "duration": "30"}'
+        $ echo "$task" | jq -r 'to_entries[] | "\(.key)=\"\(.value)\""'
+        target="google.com"
+        duration="30"
+
+    """,
+    "tunnel": """
+    - create a new dummy interface
+      assign 169.254.169.254 address to that interface: ip address add 169... dev <name of interface>
+      bring up the link: ip link set <name of interface> up
+      bind socat to that interface to forward the connections
+      fire up ssh tunnel
     """,
     "ruby": """
         # rename a hash key
@@ -276,6 +367,37 @@ Ctrl-Alt-j          Enter Vi editing mode
         rfcomm, btmon, hciconfig,
         /etc/bluetooth/, /proc/acpi/ibm/bluetooth, /etc/init.d/bluetooth,
         hciconfig, hcitool, hcidump, hciattach
+
+
+
+    # to connect to motostream
+$ bluetoothctl
+Agent registered
+[CHG] Controller F8:59:71:A4:AF:C3 Pairable: yes
+[Moto Stream]# devices
+Device 84:17:66:CB:53:F8 Moto Stream
+Device 20:74:CF:4A:40:18 Aeropex by AfterShokz
+[Moto Stream]# disconnect
+20:74:CF:4A:40:18  84:17:66:CB:53:F8
+
+# jp has a script for this
+$ ssh jp@hex.local
+jp@hex.local's password:
+Last login: Tue Apr  6 23:48:29 2021 from 10.0.0.13
+Agent pid 1991768
+[jp@hex ~]$ cat bin/aeropex
+#!/bin/sh
+# Connect to my Bluetooth headset.
+# If the connection fails, force-reload the bluetooth driver and try again.
+
+if ! bluetoothctl connect 20:74:CF:4A:40:18; then
+  sudo rmmod btusb
+  sudo rmmod btintel
+  sudo modprobe btusb
+  sleep 5
+  bluetoothctl connect 20:74:CF:4A:40:18
+fi
+
         """,
     "accents": """
             `set` = show all envvars and functions
@@ -290,6 +412,8 @@ Ctrl-Alt-j          Enter Vi editing mode
 
         see also: 'halp keyboard'
 
+        and:
+        $ localectl set-x11-keymap us pc104 compose:ralt
         """,
     "input": """
         # debug input events
@@ -386,6 +510,16 @@ Ctrl-Alt-j          Enter Vi editing mode
         Tip: To help find the best values for palm detection, you can use evtest to see the width and Z values reported during touchpad use.
 
 
+    """,
+    "date": """
+    date -d @1267619929  # (might need to remove nanoseconds, i.e. last 3 digits
+    """,
+    "disk": """
+    Check disk usage via ncurses:
+        ncdu -x / --exclude /data
+        (-x = don't cross filesystem boundaries)
+
+    du -mxs *
     """,
     "images": """
         image viewer:
@@ -605,6 +739,30 @@ Then ping the default gateway again, this output is more normal:
 
         View docker logs via systemd:
             sudo journalctl -fu docker.service
+
+        When error: docker: Error response from daemon: cgroups: cgroup mountpoint does not exist: unknown.
+        run:
+            sudo mkdir /sys/fs/cgroup/systemd
+            sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+    """,
+    "journalctl": """
+  Query the systemd journal.
+  - Show all messages from this [b]oot:
+    journalctl -b
+  - Show all messages from last [b]oot:
+    journalctl -b -1
+  - Show all messages with priority level 3 (errors) from this [b]oot:
+    journalctl -b --priority=3
+  - [f]ollow new messages (like `tail -f` for traditional syslog):
+    journalctl -f
+  - Show all messages by a specific [u]nit:
+    journalctl -u unit
+  - Filter messages within a time range (either timestamp or placeholders like "yesterday"):
+    journalctl --since now|today|yesterday|tomorrow --until YYYY-MM-DD HH:MM:SS
+  - Show all messages by a specific process:
+    journalctl _PID=pid
+  - Show all messages by a specific executable:
+    journalctl path/to/executable
     """,
     "markdown": """
         # Collapsible section
@@ -675,11 +833,22 @@ Then ping the default gateway again, this output is more normal:
         34866 = t-mobile network id
         http://nicholasarmstrong.com/2015/08/network-handover-google-fi/
     """,
+    "brightness": """
+    See: displays
+    """,
     "displays": """
-        ## Displays
-        ### send desktop to another monitor
+        # Displays
+        ## send desktop to another monitor
 
           mod + x
+
+        ## brightness
+
+        ### reset screen when washed out
+
+        $ nvidia-settings
+
+        $ echo 50 | sudo tee /sys/class/backlight/nvidia_0/brightness
 
         xbacklight -dec 10
 
@@ -687,16 +856,16 @@ Then ping the default gateway again, this output is more normal:
 
         # see also: http://askubuntu.com/questions/149054/how-to-change-lcd-brightness-from-command-line-or-via-script
 
-        # locking the screen
+        ## locking the screen
 
         Need a screenlocker, e.g. xtrlock (bare bones), or i3lock, or buttslock (see Jess's dockerfiles)
 
         buttslock: in a container; watches for dbus signals, when computer is about to go to sleep it will initiate screenlocking
 
-        # get dimensions
+        ## get dimensions
             xdpyinfo | grep dimensions:
 
-        # use JP's laptop as a monitor over ethernet:
+        ## use JP's laptop as a monitor over ethernet:
             ifconfig -a | grep -i eth  # to get the interface (usually eth0 or eth3)
             ssh <jp_ip_addr>
             tmux    # so that if the session is interrupted it can be restored
@@ -705,16 +874,32 @@ Then ping the default gateway again, this output is more normal:
         then change the display environment variable:
             export DISPLAY="10.10.10.10:1"
 
-        # See also
+        ## See also
         nvidia-settings
         xrandr
         xrandr --fb 3840x2160  # force reconfigures the screen to the specified size.
 
-        autorandr --save U2414H-P51S --force
+
+        # To autoload monitor configuration at boot/replug
+        autorandr --save U2414H-P51S --force  # where names correspond to monitors, according to JP suggestion
         autorandr -c, --change  # Automatically load the first detected profile
 
-        # might need to run:
+        ## might need to run:
         autorandr --default
+
+
+        Btw, for Dell monitors, the model number  corresponds to the diagonal in inches & the year
+        "U2414H" = 24 inches, came out in 2014, H is for full HD
+        Q = Quad, ~4K
+    """,
+    "grep": """
+        grep -E "^|text" --color='always' file
+    """,
+    "time": """
+    sudo systemctl status systemd-timesyncd
+
+    timedatectl
+
     """,
     "timezone": """
         # timezone / date
@@ -763,8 +948,41 @@ Then ping the default gateway again, this output is more normal:
             $ lspci
 
     """,
+    "make": """
+        # Touchy variables, an experimental hack.
+        # This rule rebuilds dependent targets if any "touchy" variables have changed.
+        # Some notes on this rather complex syntax:
+        #   &        = this is a "grouped target" rather than a single target.
+        #   $(@F)    = ENVVAR
+        #   ${$(@F)} = $ENVVAR
+        # Step-by-step explanation of how each variable in $(TOUCHY_VARIABLE_NAMES) is processed by this rule:
+        # 1. if $ENVVAR is unset or empty, delete /tmp/.make-targets/ENVVAR.
+        # 2. If /tmp/.make-targets/ENVVAR doesn't exist, write the value of $ENVVAR.
+        # 3. if $ENVVAR is different from the contents of /tmp/.make-targets/ENVVAR, update it.
+        # The end result is that the files in /tmp/.make-targets will be written only when
+        # the corresponding envvars change, provoking files depending on $(TOUCHY_VARIABLES)
+        # to be rebuilt. For example: changing AWS_IAM_USER => rebuild the AWS config.
+        $(TOUCHY_VARIABLES) & : track $(MAKE_TARGETS)
+            @if [[ -z "${$(@F)}" ]]; then
+                rm -f $@
+            elif [[ ! -f "/tmp/.make-targets/$(@F)" ]]; then
+                echo ${$(@F)} > $@
+            elif [[ `cat $@` != "${$(@F)}" ]]; then
+                echo -e "${red} $(@F) must be set to ${$(@F)} ${reset} in $@"
+                echo ${$(@F)} > $@
+            fi
+
+        # Turn ENV1 ENV2 into /tmp/.make-targets/ENV1, /tmp/.make-targets/ENV2
+        # (cf. make's "static pattern" syntax)
+        $(TOUCHY_VARIABLE_NAMES) & : % : /tmp/.make-targets/% | $(SUBDIRS)
+
+    """,
     "vim": """
         ## vim
+        Surround word with {}: ysiw}  (`ysiq{` to inclue a space)
+
+        expand all folds: zR
+
         :noautocmd w  -> disable autoformat on save (see .vimrc)
         or:
             BLACK=no vim whatever.py  # (see .vimrc)
@@ -773,6 +991,13 @@ Then ping the default gateway again, this output is more normal:
 
         zt/zz/zb
         redraw with cursor at top/middle/bottom of page
+
+
+        ### Spellcheck
+        :set spell
+        zg -> add word to spellfile
+        zw -> mark as bad word
+        ]s, [s -> jump to next/previous misspelled word
 
 "Rewrap document to tw:
 gw
@@ -864,6 +1089,19 @@ Commenting (nerdcommenter plugin):
     """,
     "backup": """
     borg info /media/external/backup/patamushka::patamushka-2019-01-17\ 14:04:29.168226
+
+    insync
+
+    """,
+    "minikube": """
+    # install
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+    # in ~/.docker/config.json
+    "stackOrchestrator": "kubernetes",
+
+    eval $(minikube docker-env)
     """,
     "bash": """
         # send all output from the rest of this file to FILE.WAT
@@ -921,6 +1159,12 @@ Commenting (nerdcommenter plugin):
 
     Show current keybindings:
     $ bind -P
+
+
+    # string up to colon
+    echo "${s%%:*}"
+    after =
+    value=${str#*=}
     """,
     "aws": """
         ## Mounting aws s3 bucket with sshfs
@@ -956,6 +1200,9 @@ Commenting (nerdcommenter plugin):
         watch --interval 0 'iptables -nvL'
     """,
     "git": """
+        Checkout a single file from stash
+        git checkout stash@{0} -- FILENAME
+
         Create new local branch that tracks an upstream branch:
           $ git checkout remote-branch-name  # creates new local branch
           $ git pull origin remote-branch-name
@@ -970,10 +1217,44 @@ Commenting (nerdcommenter plugin):
 
         To discard changes to a specific file:
           $ git checkout README.md
+
+        To edit a commit message on a closed PR:
+
+            @kolia:
+
+            here's what I [@kolia] did:
+            git fetch origin 9bffa0422db545c3052515324f9a18796ec621dc  (the tip of the offending PR branch)
+            git checkout -b ks/import_lots  create a branch with the same name as the original PR branch, pointing to the same commit id 9bffa04 ...
+            git rebase -i HEAD~4 and go through the steps to amend the offending commit message
+            git push --force origin ks/import_lots  which results in https://github.com/beacon-biosignals/OndaEDF.jl/compare/ks/import_lots, which indeed no longer has the offending client name
+
+            however after all this, the old offending and now closed PR still shows the old commit message, and I can't re-open the PR
+            imma try this https://gist.github.com/robertpainsi/2c42c15f1ce6dab03a0675348edd4e2c
+            :phew: PR re-opened
+            and rebased branch force-pushed
+            scrubbing complete :tada:
+
+            open github PRs reflect whatever the PR branch points to, and update after force-pushing but
+            :til: closed PRs are immutable, they will not update after updating the PR branch
+            :til: you cannot re-open a close PR if the PR branch no longer points to the commit id it pointed to when it was closed
+            :til: you can fix that by git push --force <commit-id-at-PR-close-time>:<branch-name>
+            :til: git rebase -i  is useful
+
     """,
     "notifications": """
     dunst: ~/.config/dunst/dunstrc
+    more dunst: see "Notifications" section in ~/.i3/config
+
+    bindsym Ctrl+shift+$mod+space exec dunstctl close
+    bindsym Ctrl+grave exec dunstctl history-pop
+    bindsym Ctrl+alt+space exec dunstctl close-all
+
     can reload i3 if something's amiss
+
+    dunstctl [close|history-pop]
+
+    # workaround to reload dunst (discards current notifications):
+    killall dunst;notify-send foo
     """,
     "sound": """
         ## adjust volume
@@ -999,10 +1280,112 @@ Commenting (nerdcommenter plugin):
 
 
     """,
+    "spelling": """
+    git spell check personal dictionary location: ~/.git-spell-check
+    """,
     "travis": """
     # debug job (get job id from build log on web interface)
     curl -s -X POST   -H "Content-Type: application/json"   -H "Accept: application/json"   -H "Travis-API-Version: 3"   -H "Authorization: token $TRAVIS_STAGING_ORG_API_TOKEN"   https://api-staging.travis-ci.org/job/${id}/debug
 
+    """,
+    "markdown": """
+    reText (pip-installed)
+    """,
+    "monitors": """
+# cf. xrandr output
+# 3 arbitrary monitor name
+# 4 horizontal resolution in pixels
+# 5 horizontal size in mm
+# 6 vertical res in pixels
+# 7 vertical size in mm
+# 8 horizontal offset in pixels
+# 9 vertical "
+# 10 which output is this superseding
+# 1    2            3      4    5   6    7   8    9  10
+xrandr --setmonitor DP-5-M 2160/529x2160/529+1920+0 DP-5
+xrandr --setmonitor DP-5-L 840/205x2160/529+1080+0 none
+xrandr --setmonitor DP-5-R 840/205x2160/529+4080+0 none
+
+# to unsplit, will have to run this for each monitor
+
+xrandr --delmonitor DP-5-{L,M,R}
+
+# my total h res in pixels = 8760 (all 3 screens) (3840 monitor)
+# to get pixels, see randr output:
+# DP-5 connected primary 3840x2160+1080+0 (normal left inverted right x axis y axis) 941mm x 529mm
+# 470
+
+# split big honking monitor left!
+# xrandr --setmonitor DP-5-L 1920/470x2160/529+1080+0 DP-5  # <-- DP-5 is the one we're replacing
+
+# split big honking monitor right!
+# xrandr --setmonitor DP-5-R 1920/470x2160/529+3000+0 none   # <-- put none here, because we're not replacing anything
+
+# xrandr --listmonitors
+
+# to restore layout
+autorandr -c
+
+    """,
+    "kernel": """
+    need to install linux-headers at the same time, else nvidia driver might be unhappy
+    using nvidia driver closed-source
+    dkms compiles
+
+    display doesn't work after upgrading kernel:
+
+less /var/log/Xorg.0.log
+dpkg -l *nividia*
+dpkg -l *nv*
+lsmod | grep nv
+lsmod | grep nouv
+modprobe nouveau
+sudo modprobe nouveau
+startx
+sudo rmmod nouveau
+sudo vim /etc/X11/xorg.conf.d/90-monitor.conf
+cd /etc/X11/xorg.conf.d/
+ls
+sudo mv 90-monitor.conf  90-monitor.conf.disabled
+X
+less /var/log/Xorg.0.log
+dpkg -S nouveau
+ls -l
+apt search fbterm
+apt-cache search fbterm
+sudo apt install fbterm
+cat /etc/resolv.conf
+nmtui
+sudo apt install fbterm
+fbterm -s 40
+fbterm -s 60
+cd
+X
+cd /var/log/
+ls -ltr
+date
+ps faux | grep X
+ls gdm3/
+sudo ls gdm3
+
+
+
+    $ dkms status
+    nvidia-current, 470.129.06, 5.17.0-1-amd64, x86_64: installed
+    v4l2loopback, 0.12.5, 5.10.0-7-amd64, x86_64: installed
+    v4l2loopback, 0.12.5, 5.10.0-8-amd64, x86_64: installed
+    v4l2loopback, 0.12.5, 5.17.0-1-amd64, x86_64: installed
+
+    dpkg-reconfigure nvidia-driver or something
+
+    sudo apt-get update
+    sudo apt-get install linux-image-amd64 linux-headers-amd64
+    """,
+    "ssl": """
+        openssl s_client -connect statamic.quantgene.dev:443
+    """,
+    "ec2": """
+    instance types: https://github.com/wrble/public/blob/main/aws-instance-types.md
     """,
     "vpn": """
     you could fire up an EC2 instance and SSH to it enabling socks forwarding
@@ -1019,6 +1402,15 @@ Commenting (nerdcommenter plugin):
     Add printer
 
     Note: this requires gnome-control-center. If clicking 'unlock' doesn't seem to do anything, check syslog, and try running 'sudo gnome-control-center' instead.
+    """,
+    "fonts": """
+    xfontsel
+    """,
+    "webcam": """
+        guvcview
+
+        guvcview --device=/dev/video1
+
     """,
     "webserver": """
     Run a local webserver serving the current directory:
@@ -1076,7 +1468,7 @@ bash_profile is for interactive shells; it can echo whatever you want
 bashrc should not display stuff
 
 """,
-"yubikey": """
+    "yubikey": """
 packages:
 yubikey-personalization
 yubikey-manager
