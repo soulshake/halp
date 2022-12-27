@@ -69,10 +69,14 @@ sound breakage reasons:
     --> set new expiration date
     --> save
 
-    gpg --send-keys 65955E609B076014
+    (To renew the subkey, do the same thing, but run 'key 37E069FC2CAD485E' to activate the subkey.)
 
-    gpg --armor --export 65955E609B076014
-    replace on github
+    gpg --send-keys 65955E609B076014
+    (Keyservers are defined in ~/.gnupg/gpg.conf)
+
+    replace on github:
+    gpg --armor --export 65955E609B076014 | pbcopy
+    https://github.com/settings/keys (must delete the old one first)
     """,
     "android": """
         # mount
@@ -283,6 +287,10 @@ Ctrl-Alt-j          Enter Vi editing mode
         François-Xavier Bourlet (bombela@gmail.com)
         bindsym Shift+Print exec exec mate-screenshot -a
         bindsym Ctrl+Shift+Print exec exec mate-screenshot -w
+    """,
+        "etc": """
+        # make one window fill all 3 screens:
+        i3-msg "fullscreen global"
     """,
         "navigation": """
     ### close floating window
@@ -596,6 +604,13 @@ fi
 
         ### mount a USB drive
 
+            YOU DON'T NECESSARILY NEED TO SPECIFY -t
+
+            But to check the type, run e.g.:
+
+            mount
+            mount | grep sda
+
             $ sudo fdisk -l
             $ sudo mount -t vfat /dev/sdb1 /media/external
             $ sudo mount -t ntfs <device> <desired mountpoint>
@@ -610,6 +625,8 @@ fi
             [161795.666308]  sdb: unknown partition table
             root@patamushka:/mnt# mount /dev/sdb thing/
 
+        # mount read-only:
+        sudo mount -o ro /dev/sda1 /media/external
 
     """,
     "battery": """
@@ -796,6 +813,8 @@ Then ping the default gateway again, this output is more normal:
         run:
             sudo mkdir /sys/fs/cgroup/systemd
             sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+
+        Detach keys are set in: ~/.docker/config.json
     """,
     "journalctl": """
   Query the systemd journal.
@@ -1047,6 +1066,8 @@ Then ping the default gateway again, this output is more normal:
     """,
     "vim": """
         ## vim
+        Join lines without adding a space: gJ
+
         Surround word with {}: ysiw}  (`ysiq{` to inclue a space)
 
         expand all folds: zR
