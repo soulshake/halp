@@ -23,6 +23,36 @@ But anyone connected to the same network (i.e. cafe wifi) will be able to access
 Non-Linux users have some envvar like `${DOCKER_HOST}` that includes this IP.
 
     """,
+    "abc": """
+A	Alfa [sic]	ˈalfa	ˈælfa	AL fah
+B	Bravo	ˈbravo	ˈbraːˈvo	BRAH voh
+C	Charlie	ˈtʃali or ˈʃali	ˈtʃɑːli or ˈʃɑːli	CHAR lee or SHAR lee
+D	Delta	ˈdɛlta	ˈdeltɑ	DELL tah
+E	Echo	ˈɛko	ˈeko	ECK oh
+F	Foxtrot	ˈfɔkstrɔt	ˈfɔkstrɔt	FOKS trot
+G	Golf	ˈɡɔlf	ɡʌlf [sic]	golf
+H	Hotel	hoˈtɛl	hoːˈtel	ho TELL
+I	India	ˈɪndia	ˈindi.ɑ	IN dee ah
+J	Juliett [sic]	ˈdʒuliˈɛt	ˈdʒuːli.ˈet	JEW lee ETT
+K	Kilo	ˈkilo	ˈkiːlo	KEY loh
+L	Lima	ˈlima	ˈliːmɑ	LEE mah
+M	Mike	ˈmai̯k	mɑik	mike
+N	November	noˈvɛmba	noˈvembə	no VEM ber
+O	Oscar	ˈɔska	ˈɔskɑ	OSS cah
+P	Papa	paˈpa	pəˈpɑ	pah PAH
+Q	Quebec	keˈbɛk	keˈbek	keh BECK
+R	Romeo	ˈromio	ˈroːmi.o	ROW me oh
+S	Sierra	siˈɛra	siˈerɑ	see AIR rah
+T	Tango	ˈtaŋɡo	ˈtænɡo	TANG go
+U	Uniform	ˈjunifɔm or ˈunifɔm	ˈjuːnifɔːm or ˈuːnifɔrm [sic]	YOU nee form or OO nee form
+V	Victor	ˈvɪkta	ˈviktɑ	VIK tah
+W	Whiskey	ˈwɪski	ˈwiski	WISS key
+X	Xray, x-ray	ˈɛksrei̯	ˈeksˈrei	ECKS ray
+Y	Yankee	ˈjaŋki	ˈjænki	YANG key
+Z	Zulu	ˈzulu	ˈzuːluː	ZOO loo
+
+    """,
+    "alpha": "See abc",
     "apt": """
     See also:
     - /usr/share/keyrings/
@@ -560,6 +590,7 @@ fi
         $ feh -ZF
          image editor:
         $ digikam
+        $ shotwell (less ideal)
     """,
     "keyboard": """
         ### layouts (including accents)
@@ -1009,6 +1040,20 @@ Then ping the default gateway again, this output is more normal:
         - wmctrl
         - xwininfo
         - xdpyinfo
+    """,
+    "pdf": """
+    # pdfseparate
+
+    This command would extract pages 1 - 5 of input.pdf into files named output-page1.pdf, output-page2.pdf, ...
+
+    pdfseparate -f 1 -l 5 input.pdf output-page%d.pdf
+
+    # pdfunite
+    If you want to recombine them into page ranges, for example pages 1-3 in one document and pages 4-5 in another, you can use the companion program, pdfunite, as follows:
+
+    pdfunite output-page1.pdf output-page2.pdf output-page3.pdf final-pages1-3.pdf
+    pdfunite output-page4.pdf output-page5.pdf final-pages4-5.pdf
+
     """,
     "power": """
         # putting computer to sleep
