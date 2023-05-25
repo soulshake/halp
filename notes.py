@@ -312,6 +312,10 @@ Ctrl-Alt-j          Enter Vi editing mode
     before:YYYY/MM/DD
     after:YYYY/MM/DD
     """,
+    "screenshots": """
+        # see 'i3'
+        # and ~/.i3/config
+    """,
     "i3": {
         "screenshots": """
         François-Xavier Bourlet (bombela@gmail.com)
@@ -766,6 +770,7 @@ fi
 
     Next time wifi interface mysteriously gone, try restarting network-manager, i.e.
     $ /etc/init.d/network-manager restart
+    $ /etc/init.d/networking restart
 
 # slow network?
 
@@ -811,11 +816,19 @@ Then ping the default gateway again, this output is more normal:
     Run:
     sudo dhclient wlan0
     less /etc/resolvconf/run/resolv.conf
+    less /run/NetworkManager/resolv.conf
+
+    /etc/resolv.conf
 
     # this one time, it worked automatically, so i grepped the logs to facilitate future searches. check it:
     $ sudo grep 172.19.248.1 /var/log/syslog
     Mar  8 16:46:42 zagreb NetworkManager[533]: <info>  [1615243602.1569] dhcp4 (wlp4s0): option domain_name_servers  => '172.19.248.1'
     Mar  8 16:46:42 zagreb NetworkManager[533]: <info>  [1615243602.1575] dhcp4 (wlp4s0): option routers              => '172.19.248.1'
+
+  # Can't open nm-applet (unrelated to wifi, but this is where i'll find it)
+  Authorization required, but no authorization protocol specified
+
+  xhost si:localuser:root
 
     """,
     "docker": """
@@ -846,6 +859,9 @@ Then ping the default gateway again, this output is more normal:
             sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
 
         Detach keys are set in: ~/.docker/config.json
+    """,
+    "logs": """
+    see `halp journalctl`
     """,
     "journalctl": """
   Query the systemd journal.
@@ -1004,6 +1020,7 @@ Then ping the default gateway again, this output is more normal:
 
     """,
     "grep": """
+        highlight search results without removing non-matching lines:
         grep -E "^|text" --color='always' file
     """,
     "time": """
@@ -1054,6 +1071,11 @@ Then ping the default gateway again, this output is more normal:
     pdfunite output-page1.pdf output-page2.pdf output-page3.pdf final-pages1-3.pdf
     pdfunite output-page4.pdf output-page5.pdf final-pages4-5.pdf
 
+    """,
+    "psql": """
+    # Make it give only bare output:
+    #
+    psql -t -A -c 'your command'
     """,
     "power": """
         # putting computer to sleep
@@ -1167,6 +1189,9 @@ Commenting (nerdcommenter plugin):
 
     See https://github.com/preservim/nerdcommenter for more
 
+Disable highlighting and plugins (e.g. for very large files):
+    vim -u NONE filename
+
     """,
     "session": """
     There are:
@@ -1225,6 +1250,20 @@ Commenting (nerdcommenter plugin):
     borg info /media/external/backup/patamushka::patamushka-2019-01-17\ 14:04:29.168226
 
     insync
+
+    """,
+    "mouse": """
+    to see which mouse buttons correspond to which codes:
+
+    xev -event button | grep button
+
+    # Lenovo Legion Y740 autogenerates KeyRelease events everytime a character key is pressed on RHEL 7.8
+    xinput list
+
+    ↳ Lenovo Lenovo Y Gaming Precision Mouse Consumer Control	id=10	[slave  keyboard (3)]
+    ↳ Lenovo Lenovo Y Gaming Precision Mouse  	id=19	[slave  keyboard (3)]  <-- this one
+
+    xinput disable 19
 
     """,
     "minikube": """
