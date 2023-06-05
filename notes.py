@@ -364,6 +364,15 @@ Ctrl-Alt-j          Enter Vi editing mode
       mod+shift+q
       """,
     },
+    "env": """
+    Export environment variables from another process:
+
+    while IFS= read -d '' -r -u 2 assignment; do
+      export "$assignment"
+    done 2< "/proc/2/environ"
+
+    The -d '' option with read sets the null character as the delimiter, and the -u 2 option is used to specify file descriptor 2 for reading from the file.
+    """,
     "jq": """
         Retrieve only keys in a dict
          cat ~/.convox/auth  | jq 'to_entries[] | .key'
@@ -816,6 +825,9 @@ Then ping the default gateway again, this output is more normal:
     Run:
     sudo dhclient wlan0
     less /etc/resolvconf/run/resolv.conf
+
+    # or
+    sudo dhclient wlp4s0
     less /run/NetworkManager/resolv.conf
 
     /etc/resolv.conf
