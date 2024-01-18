@@ -57,6 +57,32 @@ Z	Zulu	ˈzulu	ˈzuːluː	ZOO loo
     See also:
     - /usr/share/keyrings/
     - /etc/apt/trusted.gpg.d/
+
+$ sudo apt install zbarcam-gtk
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ libzbargtk0 : Depends: libzbar0 (= 0.23.90-1) but 0.23.92-7 is to be installed
+N: Ignoring file 'debian-bookworm.list.off' in directory '/etc/apt/sources.list.d/' as it has an invalid filename extension
+E: Unable to correct problems, you have held broken packages.
+
+
+apt-cache show zbar-tools
+apt-cache show zbar-tools | grep ^Vers
+sudo apt install zbar-tools=0.23.90-1
+sudo apt install zbar-tools=0.22-1
+apt-cache show libzbar0 | grep ^Vers
+sudo apt install libzbar0=0.23.90-1
+sudo apt install zbar-tools
+
+
     """,
     "audio": """
 
@@ -687,6 +713,12 @@ fi
     XDG_CONFIG_HOME: defaults to ~/.config
     XDG_STATE_HOME: defaults to ~/.local/state
     """,
+    "autocomplete": """
+    See 'completion'
+    """,
+    "autocompletion": """
+    See 'completion'
+    """,
     "completion": """
     Q. Where should I install my own local completions?
 
@@ -697,6 +729,10 @@ fi
 
     https://github.com/scop/bash-completion/blob/master/README.md
 
+    """,
+    "xml": """
+        # Format XML:
+        curl -s 'localhost:8000/sitemap.xml' | xmllint --format -
     """,
     "go": """
 
@@ -869,6 +905,10 @@ Then ping the default gateway again, this output is more normal:
         run:
             sudo mkdir /sys/fs/cgroup/systemd
             sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+
+        When error: django.db.utils.OperationalError: could not resize shared memory segment "/PostgreSQL.2071426192" to 8388608 bytes: No space left on device
+        in the container, run `df -h` and check the shm size.
+        To run with more memory use --shm-size, e.g.: docker run --shm-size=1G
 
         Detach keys are set in: ~/.docker/config.json
     """,
@@ -1143,8 +1183,18 @@ Then ping the default gateway again, this output is more normal:
         $(TOUCHY_VARIABLE_NAMES) & : % : /tmp/.make-targets/% | $(SUBDIRS)
 
     """,
+    "qr": """
+    zbarcam
+    """,
     "vim": """
         ## vim
+        Reverse line order of visual selection
+        '<,'>!tac
+
+        Copy visual selection to clipboard
+        :set mouse=a
+        "+y
+
         Join lines without adding a space: gJ
 
         Surround word with {}: ysiw}  (`ysiq{` to inclue a space)
@@ -1272,11 +1322,15 @@ Disable highlighting and plugins (e.g. for very large files):
     # Lenovo Legion Y740 autogenerates KeyRelease events everytime a character key is pressed on RHEL 7.8
     xinput list
 
+    Under "Virtual core keyboard" (NOT Virtual core pointer):
     ↳ Lenovo Lenovo Y Gaming Precision Mouse Consumer Control	id=10	[slave  keyboard (3)]
     ↳ Lenovo Lenovo Y Gaming Precision Mouse  	id=19	[slave  keyboard (3)]  <-- this one
 
     xinput disable 19
 
+    """,
+    "mypy": """
+    reveal_type(var)
     """,
     "minikube": """
     # install
