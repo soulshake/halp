@@ -11,6 +11,10 @@ make the request
 """,
     "kubectl": """
 
+# `top pods` for a specific node
+
+kubectl get pods -A -o wide | grep "${NODE}" | awk '{print $2 " " $1}' | while read pod namespace; do kubectl top pod $pod -n $namespace --no-headers; done | awk '{printf "%-60s %-10s %-10s %-10s\n", $1, $2, $3, $NF}'
+
 # unsafe port-forwarding for compatibility with docker compose
 
 use --address 0.0.0.0 flag to kubectl port-forward, e.g.
@@ -329,7 +333,8 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     or, someday: launch a dhcp server on home device automatically
 
-
+    # analyze network traffic loads/speeds
+    nnload
     """,
     "trash": """
         ~/.local/share/Trash
@@ -390,6 +395,10 @@ Ctrl-Alt-j          Enter Vi editing mode
       mod+shift+q
       """,
     },
+    "sort": """
+    # sort by node  ( -b  = ignore leading whitespace)
+    kubectl get pods -A -o wide | sort -b -k 8
+    """,
     "env": """
     Export environment variables from another process:
 
@@ -873,6 +882,21 @@ Then ping the default gateway again, this output is more normal:
     Mar  8 16:46:42 zagreb NetworkManager[533]: <info>  [1615243602.1569] dhcp4 (wlp4s0): option domain_name_servers  => '172.19.248.1'
     Mar  8 16:46:42 zagreb NetworkManager[533]: <info>  [1615243602.1575] dhcp4 (wlp4s0): option routers              => '172.19.248.1'
 
+  # nameserver populated but doesn't respond to dns lookups
+
+  check that there's no docker route that conflicts:
+
+  $ ip route
+  default via 172.18.0.1 dev wlp4s0
+  172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown                  <---- bad
+  172.18.0.0/16 dev br-7f70a5ed0ea4 proto kernel scope link src 172.18.0.1 linkdown
+  172.18.0.0/16 dev wlp4s0 proto kernel scope link src 172.18.139.177
+  192.168.49.0/24 dev br-9276563e123e proto kernel scope link src 192.168.49.1 linkdown
+
+  docker network ls
+  docker network inspect  #  check for overlapping subnet:
+  "Subnet": "172.18.0.0/16"  # <-- conflicts with nameserver 172.18.0.1
+
   # Can't open nm-applet (unrelated to wifi, but this is where i'll find it)
   Authorization required, but no authorization protocol specified
 
@@ -1125,9 +1149,25 @@ Then ping the default gateway again, this output is more normal:
 
     """,
     "psql": """
+    # Auto vertical output
+    \\x auto
+
+    # Disable pager
+    \\pset pager off
+
+    # Show timing info
+    \\timing
+
     # Make it give only bare output:
-    #
+
     psql -t -A -c 'your command'
+
+    # Use certificate auth
+    k get secrets eks-prd-ca -o json | jq -r '.data["ca.crt"]' | bd > /tmp/prd-ca.crt
+    k get secrets eks-prd-replication -o json | jq -r '.data["tls.key"]' | bd > /tmp/prd-tls.key
+    k get secrets eks-prd-replication -o json | jq -r '.data["tls.crt"]' | bd > /tmp/prd-tls.crt
+    chmod 600 /tmp/prd-tls.key
+    PGSSLMODE=verify-ca PGHOST=$PGHOST_RW PGUSER=streaming_replica PGDATABASE=postgres psql "sslrootcert=/tmp/prd-ca.crt sslkey=/tmp/prd-tls.key sslcert=/tmp/prd-tls.crt dbname=postgres"  -w -X
     """,
     "power": """
         # putting computer to sleep
@@ -1140,6 +1180,35 @@ Then ping the default gateway again, this output is more normal:
         config is in .config/powerkit/powerkit.conf
 
         Note: homeboy switched to xidlehook
+    """,
+    "curl": """
+    Get http status code only:
+
+    curl -s -o /dev/null -w "%{http_code}" http://169.254.169.254/latest/meta-data/spot/instance-action
+
+    """,
+    "k9s": """
+    get info, including log location:
+        k9s info
+
+    k9s config files:
+        ~/.config/k9s/
+    cluster config files:
+        ~/.local/share/k9s/clusters/es-prd/es-prd/config.yaml
+    """,
+    "spot": """
+    check for spot instance interruptions:
+
+    while true; do code=$(curl -s -o /dev/null -w "%{http_code}"  http://169.254.169.254/latest/meta-data/spot/instance-action); if [ $code = "404" ]; then echo "all good"; else echo "code is $code"; curl http://169.254.169.254/latest/meta-data/spot/instance-action; fi; sleep 5; done
+    """,
+    "helm": """
+    list charts in a repo:
+
+    $ helm repo add cnpg https://cloudnative-pg.io/charts/
+    $ helm search repo cnpg -l
+
+    search for a keyword:
+    $ helm search repo nginx
     """,
     "hardware": """
         ## display a bunch of info about CPU, USB, networks etc
@@ -1314,6 +1383,15 @@ Disable highlighting and plugins (e.g. for very large files):
     insync
 
     """,
+    "k8s": """
+    # copy secret to other namespace
+    kubectl get secret regcred -n prd -oyaml | grep -v '^\s*namespace:\s' | kubectl apply -n meilisearch -f -
+
+    # copy secret to other cluster
+    kubectl get secret -n db prd-replication -oyaml | sed 's/name: prd-replication/name: eks-prd-replication/g' |  yq e 'del(.metadata.ownerReferences)' - | kubectl --kubeconfig $NEW_KUBECONFIG apply -n db -f -
+
+    Also remember the `kubectl neat` plugin!
+    """,
     "mouse": """
     to see which mouse buttons correspond to which codes:
 
@@ -1327,6 +1405,10 @@ Disable highlighting and plugins (e.g. for very large files):
     ↳ Lenovo Lenovo Y Gaming Precision Mouse  	id=19	[slave  keyboard (3)]  <-- this one
 
     xinput disable 19
+
+    or copy/paste (or add to ~/.xinitrc to disable it on startup):
+
+    xinput list | grep 'Virtual core keyboard' -A99 | grep 'Lenovo Lenovo Y Gaming Precision Mouse' | grep -v 'Consumer Control' | awk -F= '{ print $2 }' | awk -F' ' '{ print $1 }' | xargs -I{} xinput --disable {}
 
     """,
     "mypy": """
