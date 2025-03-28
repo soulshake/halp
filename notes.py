@@ -335,6 +335,12 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     # analyze network traffic loads/speeds
     nnload
+
+    # see also
+    - ip addr
+    - ethtool - query or control network driver and hardware settings
+    - sudo lshw -class network  # list (network) hardware
+    - nmcli device show enp0s31f6  # show network device details, also which nameservers are used
     """,
     "trash": """
         ~/.local/share/Trash
@@ -408,6 +414,9 @@ Ctrl-Alt-j          Enter Vi editing mode
 
     The -d '' option with read sets the null character as the delimiter, and the -u 2 option is used to specify file descriptor 2 for reading from the file.
     """,
+    "json": """
+    see `jq`
+    """,
     "jq": """
         Retrieve only keys in a dict
          cat ~/.convox/auth  | jq 'to_entries[] | .key'
@@ -417,7 +426,6 @@ Ctrl-Alt-j          Enter Vi editing mode
         $ echo "$task" | jq -r 'to_entries[] | "\(.key)=\"\(.value)\""'
         target="google.com"
         duration="30"
-
     """,
     "tunnel": """
     - create a new dummy interface
@@ -632,6 +640,26 @@ fi
         (-x = don't cross filesystem boundaries)
 
     du -mxs *
+
+
+    Seen in syslog:
+        zagreb smartd[653]: Device: /dev/nvme1, number of Error Log entries increased from 38514 to 38516
+
+    Check with:
+        sudo nvme smart-log /dev/nvme1
+
+    your disks both have "available_spare: 100%", which is good (when a block is defective, it gets replaced with a spare)
+    "percentage_used" indicates how worn out the disk is.
+
+
+    # Check disk errors
+    $ sudo nvme error-log /dev/nvme
+    status_field	: 0x2002(Invalid Field in Command: A reserved coded value or an unsupported value in a defined field)
+    trtype		: The transport type is not indicated or the error is not transport related.
+
+    ^ I think we established that this was caused by the prometheus exporter; it queries the NVME disk but does so in a way that confuses the disk and that generates an error
+    but that's the equivalent of an HTTP/400 or HTTP/500 error, nothing to worry about re/ the disk itself
+
     """,
     "images": """
         image viewer:
@@ -639,6 +667,10 @@ fi
          image editor:
         $ digikam
         $ shotwell (less ideal)
+
+        view image metadata:
+
+        exiftool
     """,
     "keyboard": """
         ### layouts (including accents)
@@ -729,6 +761,14 @@ fi
     See 'completion'
     """,
     "completion": """
+    Completions are in ~/.local/share/bash-completion/completions
+
+    For completion on aliases, create a file in that directory with the following content:
+
+    ```
+    . ~/.alias_completion.sh
+    ```
+
     Q. Where should I install my own local completions?
 
     A. Put them in the completions subdir of $BASH_COMPLETION_USER_DIR (defaults to $XDG_DATA_HOME/bash-completion or ~/.local/share/bash-completion if $XDG_DATA_HOME is not set) to have them loaded automatically on demand when the respective command is being completed. See also the next question's answer for considerations for these files' names, they apply here as well. Alternatively, you can write them directly in ~/.bash_completion which is loaded eagerly by our main script.
@@ -982,6 +1022,12 @@ Then ping the default gateway again, this output is more normal:
 
     Edit cron tasks
         $ crontab -e
+
+
+    Serial numbers:
+
+            $ sudo dmidecode -t system | grep Serial
+            $ sudo dmidecode -t baseboard
     """,
     "defaults": """
     Default programs
@@ -1016,6 +1062,18 @@ Then ping the default gateway again, this output is more normal:
         http://unix.stackexchange.com/questions/36380/how-to-properly-and-easy-configure-xdg-open-without-any-enviroment
 
 
+    """,
+    "encryption": """
+        To encrypt:
+
+        echo "PLAINTEXT_STRING" | openssl enc -aes256 -pbkdf2 -base64 -A
+        you'll be prompted to provide a decryption password.
+        Use -A to avoid newlines.
+
+        To decrypt:
+
+        echo "ENCRYPTED_STRING" | openssl aes-256-cbc -d -pbkdf2 -a
+        enter the decryption password to decrypt.
     """,
     "google-fi": """"
     # Manually switch networks
@@ -1124,6 +1182,16 @@ Then ping the default gateway again, this output is more normal:
         vifm
 
     """,
+    "ipython": """
+    when history gets weird:
+
+    cd ~/.ipython/profile_default
+    sqlite3 history.sqlite
+    SELECT * from history limit 30;
+
+    Delete rows as needed.
+
+    """,
     "windows": """
         ## Window manipulation and stuff
 
@@ -1135,6 +1203,10 @@ Then ping the default gateway again, this output is more normal:
         - xdpyinfo
     """,
     "pdf": """
+    # edit pdfs
+
+    xournalpp
+
     # pdfseparate
 
     This command would extract pages 1 - 5 of input.pdf into files named output-page1.pdf, output-page2.pdf, ...
@@ -1194,7 +1266,7 @@ Then ping the default gateway again, this output is more normal:
     k9s config files:
         ~/.config/k9s/
     cluster config files:
-        ~/.local/share/k9s/clusters/es-prd/es-prd/config.yaml
+        ~/.local/share/k9s/clusters/es/es/config.yaml
     """,
     "spot": """
     check for spot instance interruptions:
@@ -1221,6 +1293,11 @@ Then ping the default gateway again, this output is more normal:
         ### list all PCI devices
 
             $ lspci
+
+        ### other helpful things
+        sensors (in lm-sensors package)
+
+        cpupower -c 0-7 frequency-info -fm
 
     """,
     "make": """
@@ -1251,12 +1328,20 @@ Then ping the default gateway again, this output is more normal:
         # (cf. make's "static pattern" syntax)
         $(TOUCHY_VARIABLE_NAMES) & : % : /tmp/.make-targets/% | $(SUBDIRS)
 
+
+        Insert a tab character in vim:
+        <CTRL-V><Tab> in "insert mode"
     """,
     "qr": """
     zbarcam
     """,
     "vim": """
         ## vim
+        Find whole word under cursor: * or #
+        Find partial word under cursor: g* or g#
+        Case-sensitive find whole word under cursor: same as above, then press /, up arrow, Enter
+        Case-sensitive lowercase search: append \C to search term
+
         Reverse line order of visual selection
         '<,'>!tac
 
@@ -1285,6 +1370,16 @@ Then ping the default gateway again, this output is more normal:
         zg -> add word to spellfile
         zw -> mark as bad word
         ]s, [s -> jump to next/previous misspelled word
+
+        # copy to system clipboard
+        "+y
+        "+p  <-- paste
+
+        # delete surrounding thing
+        ds" # delete surrounding quotes
+
+        % -> jump to matching bracket
+        } -> jump to next paragraph
 
 "Rewrap document to tw:
 gw
@@ -1391,6 +1486,9 @@ Disable highlighting and plugins (e.g. for very large files):
     kubectl get secret -n db prd-replication -oyaml | sed 's/name: prd-replication/name: eks-prd-replication/g' |  yq e 'del(.metadata.ownerReferences)' - | kubectl --kubeconfig $NEW_KUBECONFIG apply -n db -f -
 
     Also remember the `kubectl neat` plugin!
+
+    # show pods without resource requests
+    kubectl get pods -A -o json | jq -r '.items[] | select(.spec.containers[].resources.requests.memory|not) | [.metadata.namespace, .metadata.name, .metadata.ownerReferences[0].kind, .metadata.ownerReferences[0].name] | @tsv' | column
     """,
     "mouse": """
     to see which mouse buttons correspond to which codes:
@@ -1453,7 +1551,7 @@ Disable highlighting and plugins (e.g. for very large files):
       !*       Run the previous command except for the last word
       !foo     Run the most recent command that starts with 'foo' (e.g. !ls)
 
-    Moving the cursor:
+    Moving the cursor (readline):
       Ctrl + a   Go to the beginning of the line (Home)
       Ctrl + e   Go to the End of the line (End)
       Ctrl + p   Previous command (Up arrow)
@@ -1486,6 +1584,16 @@ Disable highlighting and plugins (e.g. for very large files):
     echo "${s%%:*}"
     after =
     value=${str#*=}
+
+    # signals / exit / status code reference
+    Remember: higher than 128 means the process was killed by a signal
+
+    kill -l
+    Add 128 to the signal number to get the exit status code
+
+
+    SHOW DIALOG BOXES FROM SHELL SCRIPTS -> whiptail - display dialog boxes from shell scripts
+    (used by haos-vm.sh)
     """,
     "aws": """
         ## Mounting aws s3 bucket with sshfs
@@ -1586,6 +1694,9 @@ Disable highlighting and plugins (e.g. for very large files):
             $ alsamixer     # gui
             # pavumeter     # gui showing current realtime audio output levels
     """,
+    "textexpansion": """
+    texpander, espanso, autokey
+    """,
     "terminal": """
 
     Can I specify what characters set the double-click selection boundary in GNOME Terminal?
@@ -1598,6 +1709,8 @@ Disable highlighting and plugins (e.g. for very large files):
     $ dconf list /org/gnome/terminal/legacy/profiles:/:65c99ed6-29e0-4c99-9231-91943285e95c/background-color
 
 
+    Strip ANSI color codes from text:
+    cat plan-output.txt  | sed 's/^[[^m]*m//g'
 
 
     """,
@@ -1831,6 +1944,9 @@ see also: power
     "yq": """
     yq eval 'explode(.)' .circleci/config.yml
     yq eval 'explode(.)' bitbucket-pipelines.yml
+
+    # check path to a key
+    cat /tmp/values.yaml | yq e -o=json | gron | grep annotations | sort
 """,
 }
 
