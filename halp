@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec uv run --script --project ~/git/halp ~/git/halp/halp.py "$@"
