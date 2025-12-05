@@ -1671,6 +1671,12 @@ Disable highlighting and plugins (e.g. for very large files):
 
     """,
     "notifications": """
+    swaync
+    https://github.com/ErikReider/SwayNotificationCenter
+
+    see also: notifications-debian
+    """,
+    "notifications-debian": """
     dunst: ~/.config/dunst/dunstrc
     more dunst: see "Notifications" section in ~/.i3/config
 
@@ -1847,6 +1853,9 @@ sudo ls gdm3
     Note: this requires gnome-control-center. If clicking 'unlock' doesn't seem to do anything, check syslog, and try running 'sudo gnome-control-center' instead.
     """,
     "fonts": """
+    wezterm ls-fonts --codepoints faa8
+
+
     xfontsel
     """,
     "webcam": """
